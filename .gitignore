@@ -38,4 +38,3 @@ src/components/*
 !src/components/.gitkeep
 src/features/*
 !src/features/.gitkeep
-src/app/*
