@@ -39,6 +39,3 @@ src/components/*
 src/features/*
 !src/features/.gitkeep
 src/app/*
-!src/app/.gitkeep
-src/assets/*
-!src/assets/.gitkeep
