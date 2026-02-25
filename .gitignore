@@ -33,8 +33,5 @@ Thumbs.db
 
 # src folder contents (keep structure with .gitkeep)
 src/pages/*
-!src/pages/.gitkeep
-src/components/*
-!src/components/.gitkeep
 src/features/*
 !src/features/.gitkeep
