@@ -5,7 +5,8 @@ import { prisma } from "../configs/prisma.js";
 export const inngest = new Inngest({ id: "project-management" });
 
 const syncUserCreation = inngest.createFunction(
-  { id: "sync-user-from-clerk", event: "clerk/user.created" },
+  { id: "sync-user-from-clerk", name: "Sync User Creation" },
+  { event: "clerk/user.created" },
   async ({ event }) => {
     const { data } = event;
     await prisma.user.create({
@@ -20,7 +21,8 @@ const syncUserCreation = inngest.createFunction(
 );
 
 const syncUserDeletion = inngest.createFunction(
-  { id: "user-deletion-from-clerk", event: "clerk/user.deleted" },
+  { id: "user-deletion-from-clerk", name: "Sync User Deletion" },
+  { event: "clerk/user.deleted" },
   async ({ event }) => {
     const { data } = event;
     await prisma.user.delete({
@@ -32,7 +34,8 @@ const syncUserDeletion = inngest.createFunction(
 );
 
 const syncUserUpdate = inngest.createFunction(
-  { id: "user-update-from-clerk", event: "clerk/user.updated" },
+  { id: "user-update-from-clerk", name: "Sync User Update" },
+  { event: "clerk/user.updated" },
   async ({ event }) => {
     const { data } = event;
     await prisma.user.update({
