@@ -111,7 +111,7 @@ const syncWorkspaceMemberAddition = inngest.createFunction(
     id: "sync-workspace-member-addition",
     name: "Sync Workspace Member Addition",
   },
-  { event: "workspace.member.added" },
+  { event: "workspace/member.added" },
   async ({ event }) => {
     const { data } = event;
     await prisma.workspaceMember.create({
