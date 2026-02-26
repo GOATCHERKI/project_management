@@ -51,9 +51,9 @@ const syncUserUpdate = inngest.createFunction(
   },
 );
 
-const workspaceCreation = inngest.createFunction(
-  { id: "workspace-creation", name: "Workspace Creation" },
-  { event: "workspace/created" },
+const syncOrgCreation = inngest.createFunction(
+  { id: "sync-org-creation", name: "Sync Organization Creation" },
+  { event: "clerk/organization.created" },
   async ({ event }) => {
     const { data } = event;
     await prisma.workspace.create({
@@ -62,7 +62,7 @@ const workspaceCreation = inngest.createFunction(
         name: data.name,
         slug: data.slug,
         ownerId: data.created_by,
-        image_url: data.image_url,
+        image_url: data.image_url ?? null,
       },
     });
     await prisma.workspaceMember.create({
@@ -75,62 +75,70 @@ const workspaceCreation = inngest.createFunction(
   },
 );
 
-const syncWorkspaceUpdate = inngest.createFunction(
-  { id: "sync-workspace-update", name: "Sync Workspace Update" },
-  { event: "workspace/updated" },
+const syncOrgUpdate = inngest.createFunction(
+  { id: "sync-org-update", name: "Sync Organization Update" },
+  { event: "clerk/organization.updated" },
   async ({ event }) => {
     const { data } = event;
     await prisma.workspace.update({
-      where: {
-        id: data.id,
-      },
+      where: { id: data.id },
       data: {
         name: data.name,
         slug: data.slug,
-        image_url: data.image_url,
+        image_url: data.image_url ?? null,
       },
     });
   },
 );
 
-const syncWorkspaceDeletion = inngest.createFunction(
-  { id: "sync-workspace-deletion", name: "Sync Workspace Deletion" },
-  { event: "workspace/deleted" },
+const syncOrgDeletion = inngest.createFunction(
+  { id: "sync-org-deletion", name: "Sync Organization Deletion" },
+  { event: "clerk/organization.deleted" },
   async ({ event }) => {
     const { data } = event;
     await prisma.workspace.delete({
-      where: {
-        id: data.id,
-      },
+      where: { id: data.id },
     });
   },
 );
 
-const syncWorkspaceMemberAddition = inngest.createFunction(
-  {
-    id: "sync-workspace-member-addition",
-    name: "Sync Workspace Member Addition",
-  },
-  { event: "workspace/member.added" },
+const syncOrgMemberAdded = inngest.createFunction(
+  { id: "sync-org-member-added", name: "Sync Organization Member Added" },
+  { event: "clerk/organizationMembership.created" },
   async ({ event }) => {
     const { data } = event;
+    const role = data.role === "org:admin" ? "ADMIN" : "MEMBER";
     await prisma.workspaceMember.create({
       data: {
-        userId: data.user_id,
-        workspaceId: data.workspace_id,
-        role: String(data.role).toUpperCase(),
+        userId: data.public_user_data.user_id,
+        workspaceId: data.organization.id,
+        role,
       },
     });
   },
 );
 
-// Create an empty array where we'll export future Inngest functions
+const syncOrgMemberRemoved = inngest.createFunction(
+  { id: "sync-org-member-removed", name: "Sync Organization Member Removed" },
+  { event: "clerk/organizationMembership.deleted" },
+  async ({ event }) => {
+    const { data } = event;
+    await prisma.workspaceMember.deleteMany({
+      where: {
+        userId: data.public_user_data.user_id,
+        workspaceId: data.organization.id,
+      },
+    });
+  },
+);
+
 export const functions = [
   syncUserCreation,
   syncUserDeletion,
   syncUserUpdate,
-  workspaceCreation,
-  syncWorkspaceUpdate,
-  syncWorkspaceDeletion,
-  syncWorkspaceMemberAddition,
+  syncOrgCreation,
+  syncOrgUpdate,
+  syncOrgDeletion,
+  syncOrgMemberAdded,
+  syncOrgMemberRemoved,
 ];
