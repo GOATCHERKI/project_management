@@ -1,11 +1,13 @@
 import { FolderOpen, CheckCircle, Users, AlertTriangle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useUser } from "@clerk/clerk-react";
 
 export default function StatsGrid() {
     const currentWorkspace = useSelector(
         (state) => state?.workspace?.currentWorkspace || null
     );
+    const { user } = useUser();
 
     const [stats, setStats] = useState({
         totalProjects: 0,
@@ -64,7 +66,7 @@ export default function StatsGrid() {
                     (acc, project) =>
                         acc +
                         project.tasks.filter(
-                            (t) => t.assignee?.email === currentWorkspace.owner.email
+                            (t) => t.assigneeId === user?.id
                         ).length,
                     0
                 ),

@@ -40,6 +40,10 @@ export const createProject = async (req, res) => {
       select: { id: true },
     });
 
+    if (!teamLead) {
+      return res.status(404).json({ message: "Team lead user not found" });
+    }
+
     const project = await prisma.project.create({
       data: {
         workspaceId,
@@ -50,7 +54,7 @@ export const createProject = async (req, res) => {
         status,
         progress,
         priority,
-        teamLead: teamLead?.id,
+        team_lead: teamLead.id,
       },
     });
 
@@ -74,7 +78,7 @@ export const createProject = async (req, res) => {
       include: {
         members: { include: { user: true } },
         tasks: {
-          include: { assignees: true, comments: { include: { user: true } } },
+          include: { assignee: true, comments: { include: { user: true } } },
         },
         owner: true,
       },
@@ -86,7 +90,7 @@ export const createProject = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: error.code || error.message });
+    res.status(500).json({ message: error.message || error.code });
   }
 };
 
