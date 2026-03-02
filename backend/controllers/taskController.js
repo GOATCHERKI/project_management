@@ -47,6 +47,7 @@ export const createTask = async (req, res) => {
         projectId,
         title,
         description,
+        type,
         priority,
         assigneeId,
         status,
