@@ -1,27 +1,18 @@
 import { format } from "date-fns";
 import { Plus, Save } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useAuth } from "@clerk/clerk-react";
-import toast from "react-hot-toast";
-import api from "../configs/api";
-import { updateProject } from "../features/workspaceSlice";
 import AddProjectMember from "./AddProjectMember";
 
 export default function ProjectSettings({ project }) {
 
-    const dispatch = useDispatch();
-    const { getToken } = useAuth();
-    const currentWorkspace = useSelector((state) => state.workspace.currentWorkspace);
-
     const [formData, setFormData] = useState({
-        name: "",
-        description: "",
+        name: "New Website Launch",
+        description: "Initial launch for new web platform.",
         status: "PLANNING",
         priority: "MEDIUM",
-        start_date: "",
-        end_date: "",
-        progress: 0,
+        start_date: "2025-09-10",
+        end_date: "2025-10-15",
+        progress: 30,
     });
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -29,23 +20,7 @@ export default function ProjectSettings({ project }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            setIsSubmitting(true);
-            toast.loading("Saving changes...");
-            const { data } = await api.put(
-                "/api/projects",
-                { id: project.id, workspaceId: currentWorkspace.id, ...formData },
-                { headers: { Authorization: `Bearer ${await getToken()}` } }
-            );
-            dispatch(updateProject(data.project));
-            toast.dismissAll();
-            toast.success("Project updated successfully");
-        } catch (error) {
-            toast.dismissAll();
-            toast.error(error?.response?.data?.message || error.message);
-        } finally {
-            setIsSubmitting(false);
-        }
+
     };
 
     useEffect(() => {

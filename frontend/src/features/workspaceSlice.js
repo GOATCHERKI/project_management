@@ -149,23 +149,6 @@ const workspaceSlice = createSlice({
           : w,
       );
     },
-    updateProject: (state, action) => {
-      // update in currentWorkspace
-      state.currentWorkspace.projects = state.currentWorkspace.projects.map(
-        (p) => p.id === action.payload.id ? { ...p, ...action.payload } : p,
-      );
-      // update in workspaces list
-      state.workspaces = state.workspaces.map((w) =>
-        w.id === state.currentWorkspace.id
-          ? {
-              ...w,
-              projects: w.projects.map((p) =>
-                p.id === action.payload.id ? { ...p, ...action.payload } : p,
-              ),
-            }
-          : w,
-      );
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchWorkspaces.pending, (state) => {
@@ -204,7 +187,6 @@ export const {
   updateWorkspace,
   deleteWorkspace,
   addProject,
-  updateProject,
   addTask,
   updateTask,
   deleteTask,
