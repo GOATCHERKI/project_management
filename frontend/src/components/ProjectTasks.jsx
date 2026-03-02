@@ -3,7 +3,9 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
 import { deleteTask, updateTask } from "../features/workspaceSlice";
+import api from "../configs/api";
 import { Bug, CalendarIcon, GitCommit, MessageSquare, Square, Trash, XIcon, Zap } from "lucide-react";
 
 const typeIcons = {
@@ -22,6 +24,7 @@ const priorityTexts = {
 
 const ProjectTasks = ({ tasks }) => {
     const dispatch = useDispatch();
+    const { getToken } = useAuth();
     const navigate = useNavigate();
     const [selectedTasks, setSelectedTasks] = useState([]);
 
@@ -58,11 +61,10 @@ const ProjectTasks = ({ tasks }) => {
         try {
             toast.loading("Updating status...");
 
-            //  Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            const { data } = await api.put(`/api/tasks/${taskId}`, { status: newStatus }, { headers: { Authorization: `Bearer ${await getToken()}` } });
 
             let updatedTask = structuredClone(tasks.find((t) => t.id === taskId));
-            updatedTask.status = newStatus;
+            updatedTask.status = data.task.status;
             dispatch(updateTask(updatedTask));
 
             toast.dismissAll();
