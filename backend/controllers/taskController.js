@@ -72,7 +72,7 @@ export const createTask = async (req, res) => {
     res.json({ task: taskWithAssignee, message: "Task created successfully" });
   } catch (error) {
     console.error("Error creating task:", error);
-    res.status(500).json({ message: error.code || error.message });
+    res.status(500).json({ message: error.message || error.code });
   }
 };
 

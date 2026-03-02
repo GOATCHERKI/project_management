@@ -1,12 +1,18 @@
 import { useState } from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
+import { useAuth } from "@clerk/clerk-react";
+import api from "../configs/api";
+import { addTask } from "../features/workspaceSlice";
+import toast from "react-hot-toast";
 
 export default function CreateTaskDialog({ showCreateTask, setShowCreateTask, projectId }) {
     const currentWorkspace = useSelector((state) => state.workspace?.currentWorkspace || null);
     const project = currentWorkspace?.projects.find((p) => p.id === projectId);
     const teamMembers = project?.members || [];
+    const dispatch = useDispatch();
+    const { getToken } = useAuth();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
@@ -21,8 +27,23 @@ export default function CreateTaskDialog({ showCreateTask, setShowCreateTask, pr
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-
+        if (!formData.due_date) return toast.error("Please select a due date");
+        if (!formData.assigneeId) return toast.error("Please select an assignee");
+        try {
+            setIsSubmitting(true);
+            const { data } = await api.post(
+                "/api/tasks",
+                { projectId, ...formData },
+                { headers: { Authorization: `Bearer ${await getToken()}` } }
+            );
+            dispatch(addTask(data.task));
+            toast.success("Task created successfully");
+            setShowCreateTask(false);
+        } catch (error) {
+            toast.error(error?.response?.data?.message || error.message);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return showCreateTask ? (
