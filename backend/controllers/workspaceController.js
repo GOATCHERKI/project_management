@@ -1,4 +1,5 @@
 import { prisma } from "../configs/prisma.js";
+import sendEmail from "../configs/nodemailer.js";
 
 export const getUserWorkspaces = async (req, res) => {
   try {
@@ -113,5 +114,41 @@ export const addUserToWorkspace = async (req, res) => {
   } catch (error) {
     console.error("Error adding user to workspace:", error);
     res.status(500).json({ error: "Failed to add user to workspace" });
+  }
+};
+
+export const sendWorkspaceInviteEmail = async (req, res) => {
+  try {
+    const { userId } = req.auth();
+    const { email, workspaceName, role } = req.body;
+
+    if (!email || !workspaceName) {
+      return res
+        .status(400)
+        .json({ error: "Email and workspace name are required" });
+    }
+
+    const inviter = await prisma.user.findUnique({ where: { id: userId } });
+    const appUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+
+    await sendEmail({
+      to: email,
+      subject: `You've been invited to join ${workspaceName}`,
+      body: `
+        <p>Hi there,</p>
+        <p><strong>${inviter?.name || "Someone"}</strong> has invited you to join the workspace <strong>${workspaceName}</strong> as a <strong>${role === "org:admin" ? "Admin" : "Member"}</strong>.</p>
+        <p>To accept the invitation, click the button below to sign up or sign in with this email address (<strong>${email}</strong>):</p>
+        <p style="margin: 24px 0;">
+          <a href="${appUrl}" style="background-color: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Accept Invitation</a>
+        </p>
+        <p>Once you sign in, you'll automatically see the pending invitation to join <strong>${workspaceName}</strong>.</p>
+        <p style="color: #6b7280; font-size: 12px;">If you did not expect this invitation, you can ignore this email.</p>
+      `,
+    });
+
+    res.json({ message: "Invitation email sent successfully" });
+  } catch (error) {
+    console.error("Error sending invite email:", error);
+    res.status(500).json({ error: "Failed to send invitation email" });
   }
 };

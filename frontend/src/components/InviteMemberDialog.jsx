@@ -2,11 +2,14 @@ import { useState } from "react";
 import { Mail, UserPlus } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useOrganization } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
+import api from "../configs/api";
 
 const InviteMemberDialog = ({ isDialogOpen, setIsDialogOpen }) => {
 
-    const {organization} = useOrganization()
+    const { organization } = useOrganization();
+    const { getToken } = useAuth();
 
     const currentWorkspace = useSelector((state) => state.workspace?.currentWorkspace || null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,16 +20,29 @@ const InviteMemberDialog = ({ isDialogOpen, setIsDialogOpen }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsSubmitting(true)
+        setIsSubmitting(true);
         try {
-            await organization.inviteMember({emailAddress: formData.email, role: formData.role})
-            toast.success("Invitation sent successfully")
-            setIsDialogOpen(false)
+            await organization.inviteMember({ emailAddress: formData.email, role: formData.role });
+
+            // Send the invitation email via our backend (Clerk won't email in dev mode)
+            const token = await getToken();
+            await api.post(
+                "/api/workspaces/send-invite",
+                {
+                    email: formData.email,
+                    workspaceName: currentWorkspace?.name,
+                    role: formData.role,
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            toast.success("Invitation sent successfully");
+            setIsDialogOpen(false);
         } catch (error) {
-            console.log(error)
-            toast.error(error.response?.data?.message || error.message)
-        }finally{
-            setIsSubmitting(false)
+            console.log(error);
+            toast.error(error.response?.data?.error || error.message);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
