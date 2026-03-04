@@ -1,4 +1,4 @@
-# ProjectFlow — Full-Stack Project Management Platform
+# ProjectFlow - Full-Stack Project Management Platform
 
 A modern, production-style project management app built with React, Node.js, Prisma, and Clerk.
 
