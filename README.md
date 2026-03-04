@@ -2,7 +2,15 @@
 
 A modern, production-style project management app built with React, Node.js, Prisma, and Clerk.
 
+[![license MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Node version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen.svg)](https://nodejs.org)
+[![React 19](https://img.shields.io/badge/react-19-blue.svg)](https://react.dev)
+[![Prisma](https://img.shields.io/badge/prisma-orm-2d3748.svg)](https://www.prisma.io)
+[![PostgreSQL](https://img.shields.io/badge/postgres-db-336791.svg)](https://www.postgresql.org)
+
 ProjectFlow helps teams plan projects, assign work, track status, and collaborate through role-based workspaces.
+
+**[🚀 Live Demo](https://project-management-system-rosy.vercel.app/)**
 
 ## Why this project stands out
 
