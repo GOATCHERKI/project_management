@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeftIcon, PlusIcon, SettingsIcon, BarChart3Icon, CalendarIcon, FileStackIcon, ZapIcon } from "lucide-react";
+import { ArrowLeftIcon, PlusIcon, SettingsIcon, BarChart3Icon, CalendarIcon, FileStackIcon, ZapIcon, Trello } from "lucide-react";
 import ProjectAnalytics from "../components/ProjectAnalytics";
 import ProjectSettings from "../components/ProjectSettings";
 import CreateTaskDialog from "../components/CreateTaskDialog";
 import ProjectCalendar from "../components/ProjectCalendar";
 import ProjectTasks from "../components/ProjectTasks";
+import ProjectBoard from "../components/ProjectBoard";
 
 export default function ProjectDetail() {
 
@@ -94,8 +95,9 @@ export default function ProjectDetail() {
 
             {/* Tabs */}
             <div>
-                <div className="inline-flex flex-wrap max-sm:grid grid-cols-3 gap-2 border border-zinc-200 dark:border-zinc-800 rounded overflow-hidden">
+                <div className="inline-flex flex-wrap max-sm:grid grid-cols-4 gap-2 border border-zinc-200 dark:border-zinc-800 rounded overflow-hidden">
                     {[
+                        { key: "board", label: "Board", icon: Trello },
                         { key: "tasks", label: "Tasks", icon: FileStackIcon },
                         { key: "calendar", label: "Calendar", icon: CalendarIcon },
                         { key: "analytics", label: "Analytics", icon: BarChart3Icon },
@@ -109,6 +111,11 @@ export default function ProjectDetail() {
                 </div>
 
                 <div className="mt-6">
+                    {activeTab === "board" && (
+                        <div className="dark:bg-zinc-900/40 rounded">
+                            <ProjectBoard tasks={tasks} project={project} />
+                        </div>
+                    )}
                     {activeTab === "tasks" && (
                         <div className=" dark:bg-zinc-900/40 rounded max-w-6xl">
                             <ProjectTasks tasks={tasks} />

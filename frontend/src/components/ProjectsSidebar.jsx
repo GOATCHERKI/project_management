@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
-import { ChevronRightIcon, SettingsIcon, KanbanIcon, ChartColumnIcon, CalendarIcon, ArrowRightIcon } from 'lucide-react';
+import { ChevronRightIcon, SettingsIcon, KanbanIcon, ChartColumnIcon, CalendarIcon, ArrowRightIcon, Trello } from 'lucide-react';
 import { useSelector } from 'react-redux';
 
 const ProjectSidebar = () => {
@@ -15,6 +15,7 @@ const ProjectSidebar = () => {
     );
 
     const getProjectSubItems = (projectId) => [
+        { title: 'Board', icon: Trello, url: `/projectsDetail?id=${projectId}&tab=board` },
         { title: 'Tasks', icon: KanbanIcon, url: `/projectsDetail?id=${projectId}&tab=tasks` },
         { title: 'Analytics', icon: ChartColumnIcon, url: `/projectsDetail?id=${projectId}&tab=analytics` },
         { title: 'Calendar', icon: CalendarIcon, url: `/projectsDetail?id=${projectId}&tab=calendar` },
