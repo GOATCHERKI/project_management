@@ -2,7 +2,6 @@
 
 A modern, production-style project management app built with React, Node.js, Prisma, and Clerk.
 
-[![license MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Node version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen.svg)](https://nodejs.org)
 [![React 19](https://img.shields.io/badge/react-19-blue.svg)](https://react.dev)
 [![Prisma](https://img.shields.io/badge/prisma-orm-2d3748.svg)](https://www.prisma.io)
@@ -12,70 +11,75 @@ ProjectFlow helps teams plan projects, assign work, track status, and collaborat
 
 **[🚀 Live Demo](https://project-management-system-rosy.vercel.app/)**
 
-## Why this project stands out
+<div align="center">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React" width="80" height="80" style="margin: 0 20px;" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js" width="80" height="80" style="margin: 0 20px;" />
+</div>
 
-- Real-world architecture: separate frontend and backend with API-first design
-- Secure authentication and authorization with Clerk
-- Role-based access control (workspace admin/member + project team lead permissions)
-- Scalable relational data modeling with Prisma + PostgreSQL
-- Invitation workflow with email delivery and acceptance sync
-- Clean, responsive UI with modern dashboard analytics
+## ✨ Why this project stands out
 
-## Core Features
+- 🏗️ Real-world architecture: separate frontend and backend with API-first design
+- 🔐 Secure authentication and authorization with Clerk
+- 👥 Role-based access control (workspace admin/member + project team lead permissions)
+- 📊 Scalable relational data modeling with Prisma + PostgreSQL
+- ✉️ Invitation workflow with email delivery and acceptance sync
+- 🎨 Clean, responsive UI with modern dashboard analytics
 
-### Workspace & Team Management
+## 🎯 Core Features
 
-- Create and manage collaborative workspaces
-- Invite members by email with role assignment (ADMIN / MEMBER)
-- Accept invitations and auto-sync user membership
-- Team page with searchable member directory and contribution stats
+### 🏢 Workspace & Team Management
 
-### Project Management
+- 🔧 Create and manage collaborative workspaces
+- 📧 Invite members by email with role assignment (ADMIN / MEMBER)
+- ✅ Accept invitations and auto-sync user membership
+- 📋 Team page with searchable member directory and contribution stats
 
-- Create projects with status, priority, timeline, and progress tracking
-- Assign team lead and manage project members
-- Project tabs: Tasks, Calendar, Analytics, Settings
-- Team-lead-only controls for sensitive project operations
+### 📁 Project Management
 
-### Task Operations
+- 📝 Create projects with status, priority, timeline, and progress tracking
+- 👤 Assign team lead and manage project members
+- 📑 Project tabs: Tasks, Calendar, Analytics, Settings
+- 🔒 Team-lead-only controls for sensitive project operations
 
-- Create tasks with type, priority, assignee, and due date
-- Update task status from project board
-- Permission model supports team leads and assignees for task updates
-- Bulk task selection + deletion flow
+### ✏️ Task Operations
 
-### Collaboration
+- 🎯 Create tasks with type, priority, assignee, and due date
+- 📊 Update task status from project board
+- 🛡️ Permission model supports team leads and assignees for task updates
+- 🗑️ Bulk task selection + deletion flow
 
-- Comment API for task discussions
-- Notification/email infrastructure using Nodemailer + Inngest hooks
+### 💬 Collaboration
 
-## Tech Stack
+- 🗨️ Comment API for task discussions
+- 🔔 Notification/email infrastructure using Nodemailer + Inngest hooks
 
-### Frontend
+## 🛠️ Tech Stack
 
-- React 19 + Vite
-- Redux Toolkit for global state
-- React Router
-- Tailwind CSS + Lucide icons
-- Axios + React Hot Toast
+### 🎨 Frontend
 
-### Backend
+- ⚛️ React 19 + Vite
+- 🔄 Redux Toolkit for global state
+- 🗺️ React Router
+- 🎭 Tailwind CSS + Lucide icons
+- 📡 Axios + React Hot Toast
 
-- Node.js + Express
-- Prisma ORM + PostgreSQL
-- Clerk (Auth + organizations/invitations)
-- Nodemailer (email invitations)
-- Inngest (event-driven workflows)
+### 🖥️ Backend
 
-## System Design (High Level)
+- 🟩 Node.js + Express
+- 📦 Prisma ORM + PostgreSQL
+- 🔑 Clerk (Auth + organizations/invitations)
+- ✉️ Nodemailer (email invitations)
+- ⚡ Inngest (event-driven workflows)
 
-- Frontend consumes REST endpoints from Express backend
-- Clerk secures routes and provides user identity
-- Backend enforces authorization for workspace/project/task actions
-- Prisma models workspace-project-task-member relations in PostgreSQL
-- Invitation flow bridges Clerk organizations with local DB membership
+## 🏗️ System Design (High Level)
 
-## Monorepo Structure
+- 🎨 Frontend consumes REST endpoints from Express backend
+- 🔐 Clerk secures routes and provides user identity
+- 🛡️ Backend enforces authorization for workspace/project/task actions
+- 📊 Prisma models workspace-project-task-member relations in PostgreSQL
+- 🔗 Invitation flow bridges Clerk organizations with local DB membership
+
+## 📂 Monorepo Structure
 
 ```
 project-management/
@@ -92,49 +96,49 @@ project-management/
 └─ README.md
 ```
 
-## API Overview
+## 🔌 API Overview
 
-### Workspace
+### 🏢 Workspace
 
 - GET /api/workspaces
 - POST /api/workspaces/send-invitation
 - POST /api/workspaces/sync-member
 
-### Projects
+### 📋 Projects
 
 - POST /api/projects
 - PUT /api/projects
 - POST /api/projects/:projectId/addMember
 
-### Tasks
+### ✅ Tasks
 
 - POST /api/tasks
 - PUT /api/tasks/:id
 - POST /api/tasks/delete
 
-### Comments
+### 💬 Comments
 
 - POST /api/comments
 - GET /api/comments/:taskId
 
-## Product Highlights for Recruiters
+## ⭐ Product Highlights for Recruiters
 
-- Built and connected full-stack CRUD + auth flows end-to-end
-- Implemented role-based access controls at API layer
-- Designed normalized relational schema for collaborative workflows
-- Added invitation and onboarding flow integrated with third-party identity provider
-- Structured app for maintainability with modular controllers/components/features
+- 🎯 Built and connected full-stack CRUD + auth flows end-to-end
+- 🔑 Implemented role-based access controls at API layer
+- 🗄️ Designed normalized relational schema for collaborative workflows
+- 📧 Added invitation and onboarding flow integrated with third-party identity provider
+- 📦 Structured app for maintainability with modular controllers/components/features
 
-## Deployment
+## 🌐 Deployment
 
 Both frontend and backend contain vercel.json files and can be deployed as separate services.
 
-## Roadmap
+## 🚀 Roadmap
 
-- Real-time comments and status updates (WebSocket/SSE)
-- Activity audit logs per workspace
-- Advanced analytics and burndown charts
-- Test suite expansion (API integration + UI testing)
+- ⚡ Real-time comments and status updates (WebSocket/SSE)
+- 📝 Activity audit logs per workspace
+- 📈 Advanced analytics and burndown charts
+- ✅ Test suite expansion (API integration + UI testing)
 
 ---
 
