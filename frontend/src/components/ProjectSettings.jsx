@@ -1,9 +1,12 @@
 import { format } from "date-fns";
 import { Plus, Save } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useUser } from "@clerk/clerk-react";
 import AddProjectMember from "./AddProjectMember";
 
 export default function ProjectSettings({ project }) {
+
+    const { user } = useUser();
 
     const [formData, setFormData] = useState({
         name: "New Website Launch",
@@ -16,7 +19,7 @@ export default function ProjectSettings({ project }) {
     });
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitting, _setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -106,9 +109,11 @@ export default function ProjectSettings({ project }) {
                         <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-300 mb-4">
                             Team Members <span className="text-sm text-zinc-600 dark:text-zinc-400">({project.members.length})</span>
                         </h2>
-                        <button type="button" onClick={() => setIsDialogOpen(true)} className="p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800" >
-                            <Plus className="size-4 text-zinc-900 dark:text-zinc-300" />
-                        </button>
+                        {user?.id === project.team_lead && (
+                            <button type="button" onClick={() => setIsDialogOpen(true)} className="p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800" title="Add Member" >
+                                <Plus className="size-4 text-zinc-900 dark:text-zinc-300" />
+                            </button>
+                        )}
                         <AddProjectMember isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} />
                     </div>
 

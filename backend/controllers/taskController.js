@@ -102,10 +102,16 @@ export const updateTask = async (req, res) => {
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
-    } else if (project.team_lead !== userId) {
+    }
+
+    // Allow update if user is team lead or assignee
+    const isTeamLead = project.team_lead === userId;
+    const isAssignee = task.assigneeId === userId;
+
+    if (!isTeamLead && !isAssignee) {
       return res
         .status(403)
-        .json({ message: "Only team lead can create task" });
+        .json({ message: "Only team lead or assignee can update task" });
     }
 
     const updatedTask = await prisma.task.update({

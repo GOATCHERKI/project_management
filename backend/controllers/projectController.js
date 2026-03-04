@@ -129,7 +129,7 @@ export const updateProject = async (req, res) => {
       if (!project) {
         return res.status(404).json({ message: "Project not found" });
       } else {
-        if (project.teamLeadId !== userId) {
+        if (project.team_lead !== userId) {
           return res.status(403).json({
             message: "Only workspace admins or team leads can update projects",
           });
@@ -176,7 +176,7 @@ export const addMember = async (req, res) => {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    if (project.teamLeadId !== userId) {
+    if (project.team_lead !== userId) {
       return res.status(403).json({
         message: "Only team leads can add members to projects",
       });
