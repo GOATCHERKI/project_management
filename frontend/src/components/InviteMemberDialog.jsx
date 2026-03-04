@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Mail, UserPlus } from "lucide-react";
 import { useSelector } from "react-redux";
-import { useOrganization } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
+import api from "../configs/api";
 
 const InviteMemberDialog = ({ isDialogOpen, setIsDialogOpen }) => {
-
-    const {organization} = useOrganization()
+    const { getToken } = useAuth()
 
     const currentWorkspace = useSelector((state) => state.workspace?.currentWorkspace || null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -19,12 +19,27 @@ const InviteMemberDialog = ({ isDialogOpen, setIsDialogOpen }) => {
         e.preventDefault();
         setIsSubmitting(true)
         try {
-            await organization.inviteMember({emailAddress: formData.email, role: formData.role})
+            const backendRole = formData.role === "org:admin" ? "ADMIN" : "MEMBER";
+            await api.post(
+                "/api/workspaces/send-invitation",
+                {
+                    email: formData.email,
+                    role: backendRole,
+                    workspaceId: currentWorkspace.id,
+                    redirectUrl: `${window.location.origin}/accept-invitation`,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${await getToken()}`,
+                    },
+                }
+            );
+
             toast.success("Invitation sent successfully")
             setIsDialogOpen(false)
         } catch (error) {
             console.log(error)
-            toast.error(error.response?.data?.message || error.message)
+            toast.error(error.response?.data?.error || error.response?.data?.message || error.message)
         }finally{
             setIsSubmitting(false)
         }

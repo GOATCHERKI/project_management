@@ -66,9 +66,10 @@ model Workspace {
     image_url   String   @default("")
     updatedAt   DateTime @updatedAt
 
-    members  WorkspaceMember[]
-    projects Project[]
-    owner    User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+    members      WorkspaceMember[]
+    projects     Project[]
+    invitations  WorkspaceInvitation[]
+    owner        User                  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 }
 
 model WorkspaceMember {
@@ -140,4 +141,20 @@ model Comment {
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
     task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+model WorkspaceInvitation {
+    id          String   @id @default(uuid())
+    email       String
+    workspaceId String
+    token       String   @unique
+    role        WorkspaceRole @default(MEMBER)
+    status      String   @default("PENDING") // PENDING, ACCEPTED, EXPIRED
+    expiresAt   DateTime
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+    @@unique([email, workspaceId])
 }

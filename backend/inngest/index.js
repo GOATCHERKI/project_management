@@ -108,14 +108,43 @@ const syncOrgMemberAdded = inngest.createFunction(
   { event: "clerk/organizationMembership.created" },
   async ({ event }) => {
     const { data } = event;
-    const role = data.role === "org:admin" ? "ADMIN" : "MEMBER";
-    await prisma.workspaceMember.create({
-      data: {
-        userId: data.public_user_data.user_id,
-        workspaceId: data.organization.id,
-        role,
-      },
-    });
+    console.log("=== Organization Member Added ===");
+    console.log("User ID:", data.public_user_data.user_id);
+    console.log("Organization ID:", data.organization.id);
+    console.log("Role:", data.role);
+
+    try {
+      const role = data.role === "org:admin" ? "ADMIN" : "MEMBER";
+
+      // Check if membership already exists
+      const existing = await prisma.workspaceMember.findFirst({
+        where: {
+          userId: data.public_user_data.user_id,
+          workspaceId: data.organization.id,
+        },
+      });
+
+      if (existing) {
+        console.log("Workspace member already exists, updating role...");
+        await prisma.workspaceMember.update({
+          where: { id: existing.id },
+          data: { role },
+        });
+      } else {
+        await prisma.workspaceMember.create({
+          data: {
+            userId: data.public_user_data.user_id,
+            workspaceId: data.organization.id,
+            role,
+          },
+        });
+      }
+
+      console.log("Workspace member synced successfully");
+    } catch (error) {
+      console.error("Error syncing workspace member:", error);
+      throw error;
+    }
   },
 );
 

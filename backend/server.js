@@ -9,10 +9,23 @@ import { protect } from "./middlewares/authMiddleware.js";
 import taskRouter from "./routes/taskRoutes.js";
 import projectRouter from "./routes/projectRoutes.js";
 import commentRouter from "./routes/commentRoutes.js";
+import webhookRouter from "./routes/webhookRoutes.js";
 
 const app = express();
 
 app.use(cors());
+
+// Request logging middleware
+app.use((req, res, next) => {
+  if (req.path.includes("sync-member") || req.path.includes("workspaces")) {
+    console.log(`\n📝 ${req.method} ${req.path}`);
+  }
+  next();
+});
+
+// Webhook route BEFORE express.json() - needs raw body
+app.use("/api/webhooks", webhookRouter);
+
 app.use(express.json());
 app.use(clerkMiddleware());
 
